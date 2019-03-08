@@ -1,11 +1,12 @@
 package com.training.productweb.Controller;
 
-import com.training.productweb.Model.Product;
+import com.training.productweb.Entity.Product;
 import com.training.productweb.Service.ProductService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -29,7 +30,7 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ArrayList<Product> findAll(){
+    public List<Product> findAll(){
         return productService.findAll();
     }
     @RequestMapping(
@@ -37,7 +38,7 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Product findById(@PathVariable("id")int id){
+    public Product findById(@PathVariable("id")Long id){
         return productService.findById(id);
     }
     @RequestMapping(
@@ -46,15 +47,15 @@ public class ProductController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public Product update(@RequestBody Product product, @PathVariable("id")int id) {
-        return productService.update(product);
+    public Product update(@RequestBody Product product, @PathVariable("id")Long id) {
+        return productService.update(product, id);
     }
     @RequestMapping(
             value = "/products/delete/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public Product delete(@PathVariable("id") int id){
+    public Product delete(@PathVariable("id") Long id){
         return productService.delete(id);
     }
 }

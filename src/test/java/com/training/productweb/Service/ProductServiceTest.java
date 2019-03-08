@@ -1,10 +1,15 @@
 package com.training.productweb.Service;
 
-import com.training.productweb.Model.Product;
+import com.training.productweb.Entity.Product;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ProductServiceTest {
 
     private ProductService service;
@@ -15,43 +20,88 @@ public class ProductServiceTest {
     }
     @Test
     public void CreateTest(){
-        Product a = new Product(1,"Roka",2000,3,"Coklat bulat",1);
+        Product a = new Product();
+        a.setCategoryId(1L);
+        a.setProductDesc("Coklat bulat");
+        a.setProductName("Roka");
+        a.setProductPrice(2000);
+        a.setProductQty(3);
         service.create(a);
-        Assert.assertTrue(service.findAll().size()==1);
-        Assert.assertTrue(service.findById(1)==a);
+        Assert.assertTrue(service.findById(a.getProductId())==a);
         a = new Product();
         Assert.assertTrue(service.create(a)==null);
     }
     @Test
     public void FindByIdTest(){
-        Product a = new Product(1,"Roka",2000,3,"Coklat bulat",1);
+        Product a = new Product();
+        a.setCategoryId(1L);
+        a.setProductDesc("Coklat bulat");
+        a.setProductName("Roka");
+        a.setProductPrice(2000);
+        a.setProductQty(3);
         service.create(a);
-        service.create(new Product(2,"Indomilk",5000,6,"Susu Full Cream",2));
-        service.create(new Product(3,null,0,3,"Coklat bulat",1));
-        Assert.assertTrue(service.findById(1)==a);
+
+        Assert.assertTrue(service.findById(a.getProductId())==a);
     }
     @Test
     public void FindAllTest(){
-        service.create(new Product(1,"Roka",2000,3,"Coklat bulat",1));
-        service.create(new Product(2,"Indomilk",5000,6,"Susu Full Cream",2));
-        service.create(new Product(3,null,0,3,"Coklat bulat",1));
+        Product a = new Product();
+        a.setCategoryId(1L);
+        a.setProductDesc("Coklat bulat");
+        a.setProductName("Roka");
+        a.setProductPrice(2000);
+        a.setProductQty(3);
+        service.create(a);
+
+        Product b = new Product();
+        b.setCategoryId(2L);
+        b.setProductDesc("Susu sehat");
+        b.setProductName("Indomilk");
+        b.setProductPrice(5000);
+        b.setProductQty(8);
+        service.create(b);
+
         Assert.assertTrue(service.findAll().size()==2);
     }
     @Test
     public void UpdateTest(){
-        Product a = new Product(1,"Roka",2000,3,"Coklat bulat",1);
+        Product a = new Product();
+        a.setCategoryId(1L);
+        a.setProductDesc("Coklat bulat");
+        a.setProductName("Roka");
+        a.setProductPrice(2000);
+        a.setProductQty(3);
         service.create(a);
-        Product b= new Product(1,"Roka",6000,7,"Coklat bulat",1);
-        Product c= service.update(b);
+
+        Product b = new Product();
+        b.setCategoryId(2L);
+        b.setProductDesc("Susu sehat");
+        b.setProductName("Indomilk");
+        b.setProductPrice(5000);
+        b.setProductQty(8);
+        Product c= service.update(b,b.getProductId());
         Assert.assertTrue(c!=null);
         Assert.assertTrue(c==b);
     }
 
     @Test
     public void DeleteTest(){
-        service.create(new Product(1,"Roka",2000,3,"Coklat bulat",1));
-        service.create(new Product(2,"Indomilk",5000,6,"Susu Full Cream",2));
-        Assert.assertTrue(service.delete(3)==null);
-        Assert.assertTrue(service.findById(1)==service.delete(1));
+        Product a = new Product();
+        a.setCategoryId(1L);
+        a.setProductDesc("Coklat bulat");
+        a.setProductName("Roka");
+        a.setProductPrice(2000);
+        a.setProductQty(3);
+        service.create(a);
+
+        Product b = new Product();
+        b.setCategoryId(2L);
+        b.setProductDesc("Susu sehat");
+        b.setProductName("Indomilk");
+        b.setProductPrice(5000);
+        b.setProductQty(8);
+        service.create(b);
+        Assert.assertTrue(service.delete(3L)==null);
+        Assert.assertTrue(service.findById(1L)==service.delete(1L));
     }
 }
