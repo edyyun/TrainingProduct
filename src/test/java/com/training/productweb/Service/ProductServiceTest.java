@@ -1,22 +1,30 @@
 package com.training.productweb.Service;
 
 import com.training.productweb.Entity.Product;
+import com.training.productweb.Repository.ProductRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductServiceTest {
 
     private ProductService service;
-
+    private ProductRepository repo;
     @Before
     public void setUp() throws Exception {
-        service=new ProductServiceImpl();
+        repo = Mockito.mock(ProductRepository.class);
+        service=new ProductServiceImpl(repo);
+
     }
     @Test
     public void CreateTest(){
@@ -26,10 +34,10 @@ public class ProductServiceTest {
         a.setProductName("Roka");
         a.setProductPrice(2000);
         a.setProductQty(3);
-        service.create(a);
-        Assert.assertTrue(service.findById(a.getProductId())==a);
-        a = new Product();
-        Assert.assertTrue(service.create(a)==null);
+        Mockito.when(repo.save(a)).thenReturn(a);
+        Product b = service.create(a);
+        Assert.assertTrue(b!=null);
+        Assert.assertTrue(a.getProductId()==b.getProductId());
     }
     @Test
     public void FindByIdTest(){
@@ -39,9 +47,16 @@ public class ProductServiceTest {
         a.setProductName("Roka");
         a.setProductPrice(2000);
         a.setProductQty(3);
+        Mockito.when(repo.findById(1L)).thenReturn(Optional.of(a));
+        Mockito.when(repo.findById(2L)).thenReturn(Optional.empty());
+        Mockito.when(repo.save(a)).thenReturn(a);
         service.create(a);
 
-        Assert.assertTrue(service.findById(a.getProductId())==a);
+        Product pro1=service.findById(1L);
+        Assert.assertTrue(pro1!=null);
+        pro1=service.findById(2L);
+        Assert.assertTrue(pro1==null);
+
     }
     @Test
     public void FindAllTest(){
@@ -51,6 +66,7 @@ public class ProductServiceTest {
         a.setProductName("Roka");
         a.setProductPrice(2000);
         a.setProductQty(3);
+        Mockito.when(repo.save(a)).thenReturn(a);
         service.create(a);
 
         Product b = new Product();
@@ -60,8 +76,9 @@ public class ProductServiceTest {
         b.setProductPrice(5000);
         b.setProductQty(8);
         service.create(b);
-
-        Assert.assertTrue(service.findAll().size()==2);
+        List<Product> products = null;
+        Mockito.when(repo.findAll()).thenReturn(products);
+        Assert.assertTrue(service.findAll()==null);
     }
     @Test
     public void UpdateTest(){
@@ -71,6 +88,7 @@ public class ProductServiceTest {
         a.setProductName("Roka");
         a.setProductPrice(2000);
         a.setProductQty(3);
+        Mockito.when(repo.save(a)).thenReturn(a);
         service.create(a);
 
         Product b = new Product();
@@ -92,6 +110,7 @@ public class ProductServiceTest {
         a.setProductName("Roka");
         a.setProductPrice(2000);
         a.setProductQty(3);
+        Mockito.when(repo.save(a)).thenReturn(a);
         service.create(a);
 
         Product b = new Product();
@@ -101,7 +120,10 @@ public class ProductServiceTest {
         b.setProductPrice(5000);
         b.setProductQty(8);
         service.create(b);
-        Assert.assertTrue(service.delete(3L)==null);
-        Assert.assertTrue(service.findById(1L)==service.delete(1L));
+        service.delete(3L);
+        service.delete(1L);
+        List<Product> products =null;
+        Mockito.when(repo.findAll()).thenReturn(products);
+        Assert.assertTrue(service.findAll() == null);
     }
 }

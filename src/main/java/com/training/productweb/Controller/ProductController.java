@@ -1,7 +1,9 @@
 package com.training.productweb.Controller;
 
+import com.training.productweb.Entity.ApiKey;
 import com.training.productweb.Entity.Product;
 import com.training.productweb.Service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +13,13 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    private ProductService productService ;
+    private ProductService productService;
 
+    @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
     @RequestMapping(
             value = "/product",
             method = RequestMethod.POST,
@@ -30,7 +34,7 @@ public class ProductController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<Product> findAll(){
+    public List<Product> findAll(ApiKey apiKey){
         return productService.findAll();
     }
     @RequestMapping(
